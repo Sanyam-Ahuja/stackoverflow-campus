@@ -10,7 +10,9 @@ import {
   RotateCcw, 
   Flame, 
   Sparkles,
-  BookOpen
+  BookOpen,
+  MessageSquare,
+  Users
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -29,138 +31,99 @@ export const Navbar: React.FC = () => {
   const bookmarkedCount = questions.filter((q) => q.isBookmarked).length;
 
   return (
-    <header className="border-b border-slate-800 bg-[#0F1115]/95 backdrop-blur sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-4">
+    <header className="border-b border-[#2e303a] bg-[#1d1e24] sticky top-0 z-40 so-header-top select-none">
+      <div className="max-w-[1340px] mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-14 gap-3">
           {/* Brand */}
           <div 
-            className="flex items-center space-x-3 cursor-pointer flex-shrink-0"
+            className="flex items-center space-x-2.5 cursor-pointer flex-shrink-0"
             onClick={() => {
               setSearchQuery('');
               setActiveView('feed');
             }}
           >
-            <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center shadow-lg shadow-orange-500/10">
-              <HelpCircle className="w-5 h-5 text-orange-500" />
+            <div className="w-8 h-8 rounded bg-[#f48225]/15 border border-[#f48225]/40 flex items-center justify-center">
+              <MessageSquare className="w-4 h-4 text-[#f48225]" />
             </div>
             <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-bold text-lg tracking-tight text-white font-mono">
-                  Stack<span className="text-orange-500">Campus</span>
+              <div className="flex items-center space-x-1.5">
+                <span className="font-bold text-base tracking-tight text-white">
+                  stack<strong className="text-[#f48225] font-black">campus</strong>
                 </span>
-                <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20 font-mono">
-                  Q&A NETWORK
+                <span className="text-[9px] font-bold uppercase px-1 py-0.2 rounded bg-[#f48225]/10 text-[#f48225] border border-[#f48225]/25 font-mono">
+                  EDU
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">University Technical Knowledge Base</p>
             </div>
           </div>
 
-          {/* Search Box */}
-          <div className="flex-1 max-w-md relative hidden md:block">
-            <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
+          {/* Search Box with Ctrl+K badge */}
+          <div className="flex-1 max-w-xl relative">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
             <input
               type="text"
-              placeholder="Search algorithms, kernel bugs, networks, courses..."
+              placeholder="Search all questions, algorithms, tags, course codes..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 if (activeView !== 'feed') setActiveView('feed');
               }}
-              className="w-full pl-9 pr-4 py-2 bg-[#16181D] border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full pl-8 pr-12 py-1.5 bg-[#141519] border border-[#343743] rounded text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#f48225] transition-colors"
             />
+            <span className="absolute right-2.5 top-2 text-[10px] font-mono text-slate-500 bg-[#21232b] px-1 py-0.2 rounded border border-[#2e313d] hidden sm:inline">
+              /
+            </span>
           </div>
 
-          {/* Nav Items */}
-          <nav className="flex items-center space-x-1">
-            <button
-              onClick={() => setActiveView('feed')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all ${
-                activeView === 'feed' || activeView === 'question_detail'
-                  ? 'bg-slate-800 text-orange-400 border border-slate-700 shadow-sm'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Questions</span>
-            </button>
-
-            <button
-              onClick={() => setActiveView('tags')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all ${
-                activeView === 'tags'
-                  ? 'bg-slate-800 text-orange-400 border border-slate-700 shadow-sm'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-              }`}
-            >
-              <Tag className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Tags</span>
-            </button>
-
-            <button
-              onClick={() => setActiveView('leaderboard')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all ${
-                activeView === 'leaderboard'
-                  ? 'bg-slate-800 text-orange-400 border border-slate-700 shadow-sm'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-              }`}
-            >
-              <Award className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden sm:inline">Reputation</span>
-            </button>
-
-            <button
-              onClick={() => setActiveView('bookmarks')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all ${
-                activeView === 'bookmarks'
-                  ? 'bg-slate-800 text-orange-400 border border-slate-700 shadow-sm'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-              }`}
-            >
-              <Bookmark className="w-3.5 h-3.5 text-purple-400" />
-              <span className="hidden sm:inline">Saved ({bookmarkedCount})</span>
-            </button>
-          </nav>
-
-          {/* Right Action & User Karma */}
+          {/* Right Controls: User Profile & Ask Button */}
           <div className="flex items-center space-x-2 flex-shrink-0">
-            <div className="hidden lg:flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-[#16181D] border border-slate-800 text-xs font-mono">
-              <img src={currentUser.avatar} alt={currentUser.name} className="w-4 h-4 rounded-full object-cover" />
-              <span className="text-orange-400 font-bold">{currentUser.reputation}</span>
-              <span className="text-[10px] text-slate-500">KARMA</span>
+            {/* User Reputation Badge */}
+            <div 
+              onClick={() => setActiveView('leaderboard')}
+              className="hidden sm:flex items-center space-x-1.5 px-2 py-1 rounded bg-[#252731] border border-[#343743] cursor-pointer hover:border-[#f48225]/50 transition-all text-xs"
+              title="Your Campus Reputation"
+            >
+              <Award className="w-3.5 h-3.5 text-[#f48225]" />
+              <span className="font-bold text-slate-200 font-mono">{currentUser.reputation.toLocaleString()}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
             </div>
 
+            {/* Ask Question button */}
             <button
               onClick={() => setActiveView('ask')}
-              className="px-3 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-medium text-xs shadow-md shadow-orange-600/30 flex items-center space-x-1.5 transition-all"
+              className="px-3 py-1.5 rounded bg-[#0a95ff] hover:bg-[#0074cc] text-white text-xs font-semibold flex items-center space-x-1 transition-all shadow-sm"
             >
               <PlusCircle className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Ask Question</span>
             </button>
 
+            {/* Reset Demo button */}
             <button
               onClick={() => setShowResetConfirm(true)}
-              className="p-1.5 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 text-slate-300 hover:text-white transition-all"
-              title="Reset seeded simulation data"
+              className="p-1.5 rounded bg-[#252731] hover:bg-[#2e323e] border border-[#343743] text-slate-400 hover:text-white transition-all"
+              title="Reset to Seeded Demo Knowledge Base"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
+              <RotateCcw className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Reset Confirmation Modal */}
+      {/* Confirmation Modal */}
       {showResetConfirm && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#16181D] border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
-            <h3 className="text-base font-bold text-white">Reset Q&A Network?</h3>
-            <p className="text-xs text-slate-400 mt-2">
-              This will restore all questions, upvotes, and accepted answers back to seeded defaults.
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#1f2026] border border-[#363a48] rounded-xl max-w-sm w-full p-5 shadow-2xl font-sans text-slate-200">
+            <div className="flex items-center space-x-2.5 text-[#f48225] mb-3">
+              <RotateCcw className="w-5 h-5" />
+              <h3 className="font-bold text-white text-sm">Reset Campus Knowledge Base?</h3>
+            </div>
+            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+              This will restore the 12 seeded course questions, answer threads, peer votes, accepted solutions, and reset your student reputation back to 1,420 points.
             </p>
-            <div className="mt-5 flex items-center justify-end space-x-2">
+            <div className="flex justify-end space-x-2 text-xs">
               <button
                 onClick={() => setShowResetConfirm(false)}
-                className="px-3 py-1.5 rounded-lg text-xs text-slate-400 hover:text-white"
+                className="px-3 py-1.5 rounded text-slate-400 hover:text-white hover:bg-[#2b2d37]"
               >
                 Cancel
               </button>
@@ -169,9 +132,9 @@ export const Navbar: React.FC = () => {
                   resetDemoData();
                   setShowResetConfirm(false);
                 }}
-                className="px-4 py-1.5 rounded-lg text-xs bg-orange-600 hover:bg-orange-500 text-white font-medium"
+                className="px-3 py-1.5 rounded bg-[#f48225] hover:bg-[#d86e17] text-slate-950 font-bold"
               >
-                Reset All
+                Confirm Reset
               </button>
             </div>
           </div>
