@@ -1,128 +1,39 @@
 import React from 'react';
 import { useCampusOverflowStore } from '../../store/useCampusOverflowStore';
-import { Award, Trophy, Star, CheckCircle2, MessageSquare, Flame } from 'lucide-react';
+import { Face } from '../Chalk';
 
 export const LeaderboardView: React.FC = () => {
   const { contributors } = useCampusOverflowStore();
-
-  const sortedContributors = [...contributors].sort((a, b) => b.reputation - a.reputation);
+  const list = [...contributors].sort((a, b) => b.reputation - a.reputation);
+  const max = list[0]?.reputation || 1;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-[#14161D] border border-slate-800 rounded-2xl p-6 shadow-xl">
-        <div className="flex items-center space-x-2">
-          <span className="text-xs font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold uppercase">
-            Campus Recognition
-          </span>
-          <span className="text-xs text-slate-500 font-mono">Academic Karma & Peer Endorsements</span>
-        </div>
-        <h2 className="text-xl font-bold text-white mt-2">Technical Reputation Leaderboard</h2>
-        <p className="text-sm text-slate-400 max-w-2xl mt-1">
-          Top engineering students contributing verified solutions, debugging memory leaks, and answering course inquiries.
-        </p>
-      </div>
-
-      {/* Top 3 Podium Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {sortedContributors.slice(0, 3).map((user, idx) => (
-          <div
-            key={user.id}
-            className={`rounded-2xl p-5 border flex flex-col justify-between relative shadow-lg ${
-              idx === 0
-                ? 'bg-gradient-to-b from-amber-950/20 to-[#14161D] border-amber-500/60 ring-1 ring-amber-500/30'
-                : idx === 1
-                ? 'bg-slate-900 border-slate-700'
-                : 'bg-slate-900/60 border-slate-800'
-            }`}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex items-center space-x-3">
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="w-12 h-12 rounded-xl object-cover border border-[#2D3540]"
-                />
-                <div>
-                  <h4 className="font-bold text-sm text-white">{user.name}</h4>
-                  <p className="text-xs font-mono text-orange-400">@{user.handle}</p>
+    <div>
+      <h1 className="hand font-extrabold text-[34px] md:text-[42px] leading-none">Who’s been helping</h1>
+      <p className="text-dust mt-3 mb-10 max-w-[60ch]">Karma comes from upvotes and accepted answers. The bar is each person’s karma against the top solver.</p>
+      <ol className="space-y-5">
+        {list.map((u, i) => (
+          <li key={u.id} className="grid grid-cols-[36px_auto_1fr] md:grid-cols-[36px_auto_1fr_1.2fr] items-center gap-x-4 gap-y-2">
+            <span className={`hand font-extrabold text-[26px] ${i === 0 ? 'text-ychalk' : 'text-dust'}`}>{i + 1}</span>
+            <Face src={u.avatar} name={u.name} size={44} />
+            <div className="min-w-0">
+              <div className="hand font-bold text-[19px] truncate">{u.name}</div>
+              <div className="text-[13px] text-dust truncate">{u.department} · {u.answersCount} answers, {u.acceptedCount} accepted</div>
+              {u.badges.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {u.badges.map((b) => (
+                    <span key={b.title} className={`text-[12px] inline-flex items-center gap-1 before:content-[""] before:w-2 before:h-2 before:rounded-full before:bg-current ${b.tier === 'gold' ? 'text-ychalk' : b.tier === 'silver' ? 'text-chalk' : 'text-pchalk'}`}>{b.title}</span>
+                  ))}
                 </div>
-              </div>
-
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center font-mono font-bold text-xs ${
-                idx === 0
-                  ? 'bg-amber-500 text-slate-950'
-                  : idx === 1
-                  ? 'bg-slate-300 text-slate-950'
-                  : 'bg-amber-800 text-amber-200'
-              }`}>
-                #{idx + 1}
-              </div>
+              )}
             </div>
-
-            <div className="my-4 space-y-1.5 text-xs font-mono">
-              <div className="flex items-center justify-between p-2 rounded-lg bg-[#0F1115] border border-slate-800">
-                <span className="text-slate-400">Reputation:</span>
-                <span className="font-bold text-orange-400 text-sm">{user.reputation.toLocaleString()}</span>
-              </div>
-              <div className="flex items-center justify-between p-2 rounded-lg bg-[#0F1115] border border-slate-800">
-                <span className="text-slate-400">Accepted Answers:</span>
-                <span className="font-bold text-emerald-400">{user.acceptedCount} solutions</span>
-              </div>
+            <div className="col-span-3 md:col-span-1 flex items-center gap-3">
+              <span className="h-3 rounded-full bg-chalk/80" style={{ width: `${(u.reputation / max) * 100}%`, opacity: 0.35 + (u.reputation / max) * 0.6 }} />
+              <span className="hand font-bold text-[17px] shrink-0">{u.reputation.toLocaleString()}</span>
             </div>
-
-            {/* Badges */}
-            <div className="flex flex-wrap gap-1 pt-2 border-t border-slate-800/80">
-              {user.badges.map((b) => (
-                <span
-                  key={b.title}
-                  className={`text-[9px] font-mono px-2 py-0.5 rounded-full font-bold flex items-center space-x-1 ${
-                    b.tier === 'gold'
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                      : 'bg-slate-800 text-slate-300 border border-slate-700'
-                  }`}
-                >
-                  <span>★</span>
-                  <span>{b.title}</span>
-                </span>
-              ))}
-            </div>
-          </div>
+          </li>
         ))}
-      </div>
-
-      {/* Full Leaderboard Table */}
-      <div className="bg-[#14161D] border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
-        <h3 className="text-sm font-bold text-white uppercase font-mono">
-          All Ranked Campus Contributors
-        </h3>
-
-        <div className="divide-y divide-slate-800 text-xs font-mono">
-          {sortedContributors.map((user, idx) => (
-            <div key={user.id} className="py-3 flex items-center justify-between">
-              <div className="flex items-center space-x-3.5">
-                <span className="text-slate-500 font-bold w-6 text-center">#{idx + 1}</span>
-                <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-lg object-cover" />
-                <div>
-                  <h5 className="font-bold text-white text-sm font-sans">{user.name}</h5>
-                  <span className="text-slate-500 text-[11px]">{user.department}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-6">
-                <div className="text-right hidden sm:block">
-                  <span className="text-[10px] text-slate-500 block">ACCEPTED</span>
-                  <span className="text-emerald-400 font-bold">{user.acceptedCount}</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-500 block">REPUTATION</span>
-                  <span className="text-orange-400 font-bold text-sm">{user.reputation}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      </ol>
     </div>
   );
 };

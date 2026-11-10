@@ -1,57 +1,59 @@
 @import "tailwindcss";
 
+/* Campus Overflow — the department chalkboard after office hours.
+   Slate-green board, chalk-white writing, yellow chalk for what is solved or important,
+   blue chalk for topics, pink chalk for what still needs an answer. Headings are marker-written. */
+@theme {
+  --color-board: #233a2f;
+  --color-board-dark: #1a2c23;
+  --color-board-light: #2d4a3c;
+  --color-chalk: #edefe6;
+  --color-dust: #a9b8ad;
+  --color-ychalk: #f3e27a;
+  --color-bchalk: #9fd3e8;
+  --color-pchalk: #f2a7b5;
+  --color-frame: #6b4a2f;
+  --font-hand: "Shantell Sans", "Comic Neue", cursive;
+  --font-sans: "Lexend", system-ui, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, monospace;
+}
+
 @layer base {
-  :root {
-    --so-orange: #f48225;
-    --so-bg: #17181c;
-    --so-surface: #1f2026;
-    --so-border: #2e303a;
-    --so-accent: #f48225;
-  }
-
   body {
-    background-color: #17181c;
-    color: #e3e6e8;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Adjusted", "Segoe UI", "Liberation Sans", sans-serif;
+    background-color: var(--color-board);
+    background-image:
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(255,255,255,.045), transparent 70%),
+      radial-gradient(ellipse 50% 50% at 85% 60%, rgba(255,255,255,.035), transparent 70%),
+      radial-gradient(ellipse 40% 30% at 40% 95%, rgba(255,255,255,.03), transparent 70%);
+    background-attachment: fixed;
+    color: var(--color-chalk);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
   }
-
-  code, pre, .font-mono {
-    font-family: 'JetBrains Mono', Consolas, Menlo, Monaco, monospace;
-  }
+  ::selection { background: var(--color-ychalk); color: var(--color-board-dark); }
+  :focus-visible { outline: 2px dashed var(--color-ychalk); outline-offset: 3px; }
+  input, select, textarea, button { font: inherit; }
 }
 
-.so-header-top {
-  border-top: 3px solid #f48225;
+@layer components {
+  .hand { font-family: var(--font-hand); text-shadow: 0 0 1px rgba(237,239,230,.45); }
+  .chalkline { height: 3px; background: linear-gradient(90deg, transparent, rgba(237,239,230,.55) 4%, rgba(237,239,230,.35) 50%, rgba(237,239,230,.55) 96%, transparent); border-radius: 3px; }
+  .chalkbox { border: 2px solid rgba(237,239,230,.55); border-radius: 6px 10px 7px 12px / 10px 6px 12px 7px; }
+  .chalkbox-y { border: 2.5px solid var(--color-ychalk); border-radius: 8px 14px 9px 16px / 14px 8px 16px 9px; }
+  .ring-chalk { border: 2.5px solid var(--color-ychalk); border-radius: 50% 46% 52% 48% / 48% 54% 46% 52%; }
+  .slate-in { width: 100%; background: rgba(0,0,0,.18); border: 0; border-bottom: 2px solid rgba(237,239,230,.4); color: var(--color-chalk); padding: 0.6rem 0.75rem; border-radius: 6px 6px 0 0; }
+  .slate-in:focus { outline: none; border-bottom-color: var(--color-ychalk); background: rgba(0,0,0,.26); }
+  .slate-in::placeholder { color: #8fa096; }
+  .chalkbtn { font-family: var(--font-hand); font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 1rem; color: var(--color-board-dark); background: var(--color-ychalk); border-radius: 8px 12px 9px 14px / 12px 8px 14px 9px; transition: transform 120ms; }
+  .chalkbtn:hover:not(:disabled) { transform: rotate(-1.2deg) scale(1.03); }
+  .chalkbtn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .ghostbtn { font-family: var(--font-hand); font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.9rem; color: var(--color-chalk); border: 2px solid rgba(237,239,230,.45); border-radius: 8px 12px 9px 14px / 12px 8px 14px 9px; }
+  .ghostbtn:hover { border-color: var(--color-ychalk); color: var(--color-ychalk); }
+  .code { font-family: var(--font-mono); font-size: 13.5px; background: var(--color-board-dark); border: 1px dashed rgba(159,211,232,.35); padding: 0.9rem 1rem; overflow-x: auto; color: #dfe7df; border-radius: 6px; }
 }
 
-.so-card {
-  background-color: #1f2026;
-  border: 1px solid #2e303a;
-}
-
-.so-tag {
-  background-color: #262933;
-  color: #79a7d3;
-  border: 1px solid #363a48;
-}
-
-.so-tag:hover {
-  background-color: #2e323e;
-  color: #96c3f0;
-}
-
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #17181c;
-}
-::-webkit-scrollbar-thumb {
-  background: #2e303a;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #f48225;
-}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-board-dark); }
+::-webkit-scrollbar-thumb { background: var(--color-board-light); border-radius: 10px; }

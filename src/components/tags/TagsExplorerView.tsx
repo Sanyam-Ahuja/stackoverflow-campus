@@ -1,84 +1,31 @@
 import React, { useState } from 'react';
 import { useCampusOverflowStore } from '../../store/useCampusOverflowStore';
-import { Tag, Search, ArrowRight } from 'lucide-react';
 
+/** Topics written across the board, sized by how often they come up. */
 export const TagsExplorerView: React.FC = () => {
   const { questions, setSelectedTag, setActiveView } = useCampusOverflowStore();
-  const [searchTerm, setSearchTerm] = useState('');
-
-  // Extract unique tags and count frequencies
-  const tagCounts: Record<string, number> = {};
-  questions.forEach((q) => {
-    q.tags.forEach((t) => {
-      tagCounts[t] = (tagCounts[t] || 0) + 1;
-    });
-  });
-
-  const sortedTags = Object.entries(tagCounts)
-    .map(([tag, count]) => ({ tag, count }))
-    .sort((a, b) => b.count - a.count);
-
-  const filteredTags = sortedTags.filter((t) =>
-    t.tag.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleSelectTag = (tag: string) => {
-    setSelectedTag(tag);
-    setActiveView('feed');
-  };
+  const [q, setQ] = useState('');
+  const counts: Record<string, number> = {};
+  questions.forEach((x) => x.tags.forEach((t) => (counts[t] = (counts[t] || 0) + 1)));
+  const all = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  const max = all[0]?.[1] || 1;
+  const shown = all.filter(([t]) => t.toLowerCase().includes(q.toLowerCase()));
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-[#14161D] border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase font-semibold">
-              Taxonomy Index
-            </span>
-            <span className="text-xs text-slate-500 font-mono">
-              {sortedTags.length} Technical Tags Indexed
-            </span>
-          </div>
-          <h2 className="text-xl font-bold text-white mt-2">Course Topic Tags</h2>
-          <p className="text-sm text-slate-400 max-w-2xl mt-1">
-            Explore programming topics, system libraries, algorithms, and course problem sets by keyword tags.
-          </p>
-        </div>
-
-        <div className="relative w-full md:w-72">
-          <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
-          <input
-            type="text"
-            placeholder="Search tags..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-[#0F1115] border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
-          />
-        </div>
+    <div>
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
+        <h1 className="hand font-extrabold text-[34px] md:text-[42px] leading-none">Topics</h1>
+        <input className="slate-in max-w-[280px]" value={q} onChange={(e) => setQ(e.target.value)} placeholder="filter topics" aria-label="Filter topics" />
       </div>
-
-      {/* Tags Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-        {filteredTags.map(({ tag, count }) => (
-          <div
-            key={tag}
-            onClick={() => handleSelectTag(tag)}
-            className="p-3.5 rounded-xl bg-[#14161D] border border-slate-800 hover:border-orange-500/60 cursor-pointer transition-all flex flex-col justify-between group shadow-sm"
-          >
-            <div>
-              <span className="text-xs font-mono font-bold text-slate-200 group-hover:text-orange-400 transition-colors">
-                #{tag}
-              </span>
-              <p className="text-[10px] text-slate-500 mt-1">
-                {count} question{count === 1 ? '' : 's'}
-              </p>
-            </div>
-
-            <div className="mt-3 flex items-center justify-end text-slate-500 group-hover:text-orange-400">
-              <ArrowRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
+      {shown.length === 0 && <p className="text-dust py-10">No topic like “{q}”.</p>}
+      <div className="flex flex-wrap items-baseline gap-x-7 gap-y-4">
+        {shown.map(([t, n], i) => (
+          <button key={t} onClick={() => { setSelectedTag(t); setActiveView('feed'); }}
+            className={`hand font-bold leading-none hover:text-ychalk ${i % 3 === 0 ? 'text-bchalk' : i % 3 === 1 ? 'text-chalk' : 'text-dust'}`}
+            style={{ fontSize: `${16 + (n / max) * 26}px`, transform: `rotate(${((i * 37) % 7) - 3}deg)` }}
+            title={`${n} question${n === 1 ? '' : 's'}`}>
+            #{t}<sup className="text-[12px] ml-0.5 text-dust">{n}</sup>
+          </button>
         ))}
       </div>
     </div>
